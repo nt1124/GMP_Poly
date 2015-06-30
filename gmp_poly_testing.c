@@ -8,16 +8,18 @@ void test_evaluation()
 
 	mpz_t *coeffs, x, *y;
 	gmp_randstate_t *state = seedRandGen();
-	int i, degree = 6;
+	int i, degree = 6, numCoeffs = degree + 1;
 
 
-
-	coeffs = (mpz_t *) calloc(degree, sizeof(mpz_t));
-	for(i = 0; i < degree; i ++)
+	// Note the difference between the degree and the number of coeffients.
+	// Number of coeffients is the degree plus one.
+	coeffs = (mpz_t *) calloc(numCoeffs, sizeof(mpz_t));
+	for(i = 0; i < numCoeffs; i ++)
 	{
 		mpz_init(coeffs[i]);
 		mpz_urandomm(coeffs[i], *state, q);
 	}
+
 
 	polyToEval = setPolyWithArray(coeffs, q, degree);
 

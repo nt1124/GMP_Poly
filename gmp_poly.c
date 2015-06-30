@@ -3,8 +3,10 @@ void printPoly(struct Fq_poly *polyToPrint)
 {
 	int i;
 
+	// For each Coeff
 	for(i = 0; i <= polyToPrint -> degree; i ++)
 	{
+		// If the coeff is not 0... (if it is no need to print it)
 		if(0 != mpz_cmp_ui(polyToPrint -> coeffs[i], 0))
 		{
 			if(i == 0)
@@ -76,7 +78,7 @@ struct Fq_poly *initPolyWithDegree(int degree)
 }
 
 
-// Free the memomry used for a polynomial.
+// Clear the memory used for a polynomials coeffs.
 void clearFqPoly(struct Fq_poly *toFree)
 {
 	int i;
@@ -88,7 +90,7 @@ void clearFqPoly(struct Fq_poly *toFree)
 }
 
 
-// Free the memomry used for a polynomial.
+// Free the memory used for a polynomial.
 void freeFqPoly(struct Fq_poly *toFree)
 {
 	free(toFree -> coeffs);
