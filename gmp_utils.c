@@ -1,5 +1,3 @@
-#include <ctime>
-
 gmp_randstate_t *seedRandGen()
 {
 	gmp_randstate_t *state = (gmp_randstate_t*) calloc(1, sizeof(gmp_randstate_t));
