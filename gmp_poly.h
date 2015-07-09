@@ -20,4 +20,6 @@ mpz_t q;
 #include "gmp_utils.c"
 #include "gmp_poly_testing.c"
 
+#include "lagrangeInterpolation.h"
+
 #endif
