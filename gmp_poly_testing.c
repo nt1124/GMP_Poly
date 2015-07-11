@@ -2,7 +2,7 @@
 
 
 
-void test_evaluation()
+void test_evaluation(mpz_t q)
 {
 	struct Fq_poly *polyToEval;
 
@@ -22,14 +22,7 @@ void test_evaluation()
 		mpz_urandomm(coeffs[i], *state, q);
 	}
 
-
 	polyToEval = setPolyWithArray(coeffs, q, degree);
-
-
-	// printPoly(polyToEval);
-	// printf("\n");
-	// printPolyReverse(polyToEval);
-	// printf("\n");
 
 	for(i = 0; i < 10; i ++)
 	{
@@ -41,4 +34,35 @@ void test_evaluation()
 		evalutePolyAlt(yAlt, polyToEval, x, q);
 		gmp_printf("++ %Zd\n\n", yAlt);
 	}
+}
+
+
+
+void test_interpolation(mpz_t q)
+{
+	struct Fq_poly *originalPoly, *interpolatedPoly;
+	struct PointwiseRep *pointwiseVersion;
+
+	mpz_t *coeffs;
+	gmp_randstate_t *state = seedRandGen();
+	int i, degree = 6, numCoeffs = degree + 1;
+
+
+	coeffs = (mpz_t *) calloc(numCoeffs, sizeof(mpz_t));
+	for(i = 0; i < numCoeffs; i ++)
+	{
+		mpz_init(coeffs[i]);
+		mpz_urandomm(coeffs[i], *state, q);
+	}
+	originalPoly = setPolyWithArray(coeffs, q, degree);
+
+
+	printPoly(originalPoly);
+	printf("\n");
+
+	pointwiseVersion = convertPolyToPointRep(originalPoly, q, degree);
+	interpolatedPoly = interpolatePointwiseRep(pointwiseVersion, q);
+
+	printPoly(interpolatedPoly);
+	printf("\n");
 }

@@ -18,7 +18,7 @@ void printPoly(struct Fq_poly *polyToPrint)
 				gmp_printf("%Zd.X^%d", polyToPrint -> coeffs[i], i);
 			}
 
-			if(i < polyToPrint -> degree - 1)
+			if(i <= polyToPrint -> degree - 1)
 			{
 				printf(" + ");
 			}

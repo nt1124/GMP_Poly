@@ -23,14 +23,15 @@ typedef struct PointwiseRep
 } PointwiseRep;
 
 
-mpz_t q;
-
-
 #include "gmp_poly.c"
 #include "gmp_utils.c"
+
+
+#include "PointwiseRepUtils.c"
+#include "interpolationUtils.c"
+
+
 #include "gmp_poly_testing.c"
 
-// #include "lagrangeInterpolation.h"
-#include "interpolation.c"
 
 #endif
