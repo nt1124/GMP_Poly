@@ -102,7 +102,7 @@ struct Fq_poly *interpolatePointwiseRep(struct PointwiseRep *polyToInterpolate, 
 
 
 	lagrangePolys = generateLagrangePolys(polyToInterpolate -> numPoints, q);
-	outputPoly = initPolyWithDegree(polyToInterpolate -> numPoints); 
+	outputPoly = initPolyWithDegree(polyToInterpolate -> numPoints - 1); 
 
 	for(i = 0; i < polyToInterpolate -> numPoints; i ++)
 	{

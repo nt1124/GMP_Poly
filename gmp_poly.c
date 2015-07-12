@@ -257,21 +257,21 @@ mpz_t *evalutePoly(struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
 
 
 
-void evalutePolyAlt(mpz_t result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
+void evalutePolyAlt(mpz_t *result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
 {
 	mpz_t temp, tempResult;
 	int i;
 
 
 	mpz_init(temp);
-	mpz_init_set_ui(result, 0);
+	mpz_init_set_ui(*result, 0);
 	mpz_init(tempResult);
 
 	for(i = polyToEval -> degree; i >= 0; i--)
 	{
-		mpz_mul(temp, result, x);
+		mpz_mul(temp, *result, x);
 		mpz_add(tempResult, temp, polyToEval -> coeffs[i]);
-		mpz_mod(result, tempResult, q);
+		mpz_mod(*result, tempResult, q);
 	}
 }
 
