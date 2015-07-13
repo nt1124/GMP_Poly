@@ -29,7 +29,7 @@ struct PointwiseRep *convertPolyToPointRep(struct Fq_poly *inputPoly, mpz_t q, i
 }
 
 
-struct PointwiseRep *addTwoPointwiseReps(struct PointwiseRep *polyA, struct PointwiseRep *polyB, int maxDegree, mpz_t q)
+struct PointwiseRep *internalAddTwoPointwiseReps(struct PointwiseRep *polyA, struct PointwiseRep *polyB, int maxDegree, mpz_t q)
 {
 	struct PointwiseRep *outputPoly = (struct PointwiseRep *) calloc(1, sizeof(struct PointwiseRep));
 	mpz_t tempMPZ;
@@ -54,7 +54,7 @@ struct PointwiseRep *addTwoPointwiseReps(struct PointwiseRep *polyA, struct Poin
 }
 
 
-struct PointwiseRep *multiplyTwoPointwiseReps(struct PointwiseRep *polyA, struct PointwiseRep *polyB, int maxDegree, mpz_t q)
+struct PointwiseRep *internalMultiplyTwoPointwiseReps(struct PointwiseRep *polyA, struct PointwiseRep *polyB, int maxDegree, mpz_t q)
 {
 	struct PointwiseRep *outputPoly = (struct PointwiseRep *) calloc(1, sizeof(struct PointwiseRep));
 	mpz_t tempMPZ;
@@ -76,5 +76,23 @@ struct PointwiseRep *multiplyTwoPointwiseReps(struct PointwiseRep *polyA, struct
 
 
 	return outputPoly;
+}
+
+
+
+struct Fq_poly *nLogN_MultiplyPolys(struct Fq_poly *rawPolyA, struct Fq_poly *rawPolyB, mpz_t q)
+{
+	struct PointwiseRep *processedPolyA, *processedPolyB, *outputPointwisePoly;
+	struct Fq_poly *outputPoly;
+	int maxDegreeDoubled;
+
+
+	maxDegreeDoubled = 2 * MAX(rawPolyA -> degree, rawPolyB -> degree);
+	processedPolyA = convertPolyToPointRep(rawPolyA, q, maxDegreeDoubled);
+	processedPolyB = convertPolyToPointRep(rawPolyB, q, maxDegreeDoubled);
+
+	outputPointwisePoly = internalMultiplyTwoPointwiseReps(processedPolyA, processedPolyB, maxDegreeDoubled, q);
+
+	outputPoly = interpolatePointwiseRep(outputPointwisePoly, q);
 }
 

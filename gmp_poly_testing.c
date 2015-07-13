@@ -65,7 +65,7 @@ void test_interpolation(mpz_t q)
 
 	pointwiseVersion = convertPolyToPointRep(originalPoly, q, degree);
 
-	tempPointwise = addTwoPointwiseReps(pointwiseVersion, pointwiseVersion, pointwiseVersion -> numPoints, q);
+	tempPointwise = internalAddTwoPointwiseReps(pointwiseVersion, pointwiseVersion, pointwiseVersion -> numPoints, q);
 
 	interpolatedPoly = interpolatePointwiseRep(pointwiseVersion, q);
 	printPoly(interpolatedPoly);

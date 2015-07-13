@@ -27,8 +27,8 @@ typedef struct PointwiseRep
 #include "gmp_utils.c"
 
 
-#include "PointwiseRepUtils.c"
 #include "interpolationUtils.c"
+#include "PointwiseRepUtils.c"
 
 
 #include "gmp_poly_testing.c"
