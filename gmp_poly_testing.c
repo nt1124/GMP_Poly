@@ -74,4 +74,9 @@ void test_interpolation(mpz_t q)
 	interpolatedPoly = interpolatePointwiseRep(tempPointwise, q);
 	printPoly(interpolatedPoly);
 	printf("\n");
+
+	interpolatedPoly = nLogN_MultiplyPolys(originalPoly, originalPoly, q);
+	
+	printPoly(interpolatedPoly);
+	printf("\n");
 }

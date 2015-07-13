@@ -87,7 +87,7 @@ struct Fq_poly *nLogN_MultiplyPolys(struct Fq_poly *rawPolyA, struct Fq_poly *ra
 	int maxDegreeDoubled;
 
 
-	maxDegreeDoubled = 2 * MAX(rawPolyA -> degree, rawPolyB -> degree);
+	maxDegreeDoubled = 2 * MAX(rawPolyA -> degree, rawPolyB -> degree) + 1;
 	processedPolyA = convertPolyToPointRep(rawPolyA, q, maxDegreeDoubled);
 	processedPolyB = convertPolyToPointRep(rawPolyB, q, maxDegreeDoubled);
 
