@@ -15,7 +15,6 @@ struct Fq_poly **getLagrangeFactorsDivProduct(mpz_t divFactorProduct, int n, uns
 
 	for(j = 1; j <= n; j ++)
 	{
-
 		mpz_init(divFactors[j-1]);
 
 		if(i != j)
