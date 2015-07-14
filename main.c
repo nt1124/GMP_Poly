@@ -17,7 +17,8 @@ int main()
 
 
 	// test_evaluation(q);
-	test_interpolation(q);
+	// test_interpolation(q);
+	test_nLogN_Multiply(q);
 
 
 	return 0;

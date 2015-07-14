@@ -42,7 +42,7 @@ void test_evaluation(mpz_t q)
 void test_interpolation(mpz_t q)
 {
 	struct Fq_poly *originalPoly, *interpolatedPoly;
-	struct PointwiseRep *pointwiseVersion, *tempPointwise;
+	struct PointwiseRep *pointwiseVersion;
 
 	mpz_t *coeffs;
 	gmp_randstate_t *state = seedRandGen();
@@ -65,18 +65,58 @@ void test_interpolation(mpz_t q)
 
 	pointwiseVersion = convertPolyToPointRep(originalPoly, q, degree);
 
-	tempPointwise = internalAddTwoPointwiseReps(pointwiseVersion, pointwiseVersion, pointwiseVersion -> numPoints, q);
-
 	interpolatedPoly = interpolatePointwiseRep(pointwiseVersion, q);
 	printPoly(interpolatedPoly);
 	printf("\n");
 
-	interpolatedPoly = interpolatePointwiseRep(tempPointwise, q);
+}
+
+
+
+void test_nLogN_Multiply(mpz_t q)
+{
+	struct Fq_poly *originalPolyA, *originalPolyB, *interpolatedPoly;
+	struct PointwiseRep *pointwiseVersion, *tempPointwise;
+
+	srand(time(NULL));
+
+	mpz_t *coeffs;
+	gmp_randstate_t *state = seedRandGen();
+	int degreeA = rand() % 13, degreeB = rand() % 13;
+	int numCoeffsA = degreeA + 1,  numCoeffsB = degreeB + 1;
+	int i;
+
+
+	coeffs = (mpz_t *) calloc(numCoeffsA, sizeof(mpz_t));
+	mpz_set_ui(q, 101);
+
+	for(i = 0; i < numCoeffsA; i ++)
+	{
+		mpz_init(coeffs[i]);
+		mpz_urandomm(coeffs[i], *state, q);
+	}
+	originalPolyA = setPolyWithArray(coeffs, q, degreeA);
+
+	coeffs = (mpz_t *) calloc(numCoeffsB, sizeof(mpz_t));
+	mpz_set_ui(q, 101);
+
+	for(i = 0; i < numCoeffsB; i ++)
+	{
+		mpz_init(coeffs[i]);
+		mpz_urandomm(coeffs[i], *state, q);
+	}
+	originalPolyB = setPolyWithArray(coeffs, q, degreeB);
+
+	printPoly(originalPolyA);
+	printf("\n");
+	printPoly(originalPolyB);
+	printf("\n\n");
+
+	interpolatedPoly = nLogN_MultiplyPolys(originalPolyA, originalPolyB, q);
 	printPoly(interpolatedPoly);
 	printf("\n");
 
-	interpolatedPoly = nLogN_MultiplyPolys(originalPoly, originalPoly, q);
-	
+	interpolatedPoly = mulPolys(originalPolyA, originalPolyB, q);
 	printPoly(interpolatedPoly);
 	printf("\n");
 }
