@@ -112,3 +112,30 @@ struct Fq_poly *interpolatePointwiseRep(struct PointwiseRep *polyToInterpolate, 
 
 	return outputPoly;
 }
+
+
+struct Fq_poly *interpolatePointwiseRepMultiply(struct PointwiseRep *polyToInterpolate, int degreeA, int degreeB, mpz_t q)
+{
+	struct Fq_poly *outputPoly = (struct Fq_poly *) calloc(1, sizeof(struct Fq_poly));
+	struct Fq_poly **lagrangePolys;
+	int i;
+
+
+	lagrangePolys = generateLagrangePolys(polyToInterpolate -> numPoints, q);
+	outputPoly = initPolyWithDegree(degreeA + degreeB); 
+
+
+	for(i = 0; i < polyToInterpolate -> numPoints; i ++)
+	{
+		scalarMultiInPlace(lagrangePolys[i], polyToInterpolate -> evalPoints[i], q);
+		outputPoly = addPolys(lagrangePolys[i], outputPoly, q);
+	}
+
+	trimLeadingZeroes(outputPoly);
+	// printf("%d\n\n", outputPoly -> degree);
+	// outputPoly -> degree = degreeA + degreeB;
+
+
+
+	return outputPoly;
+}

@@ -18,7 +18,7 @@ void printPoly(struct Fq_poly *polyToPrint)
 				gmp_printf("%Zd.X^%d", polyToPrint -> coeffs[i], i);
 			}
 
-			if(i <= polyToPrint -> degree - 1)
+			if(i < polyToPrint -> degree)
 			{
 				printf(" + ");
 			}
@@ -306,4 +306,36 @@ int getHighestDegree(struct Fq_poly *inputPoly)
 	i --;
 
 	return i;
+}
+
+
+void trimLeadingZeroes(struct Fq_poly *inputPoly)
+{
+	mpz_t *trimedCoeffs;
+	int i, j;
+
+
+	i = inputPoly -> degree;
+
+	while(0 != mpz_cmp_ui(inputPoly -> coeffs[i], 0))
+	{
+		i --;
+	}
+
+	trimedCoeffs = (mpz_t *) calloc(i, sizeof(mpz_t));
+
+	for(j = 0; j < i; j ++)
+	{
+		mpz_init_set(trimedCoeffs[j], inputPoly -> coeffs[j]);
+		mpz_clear(inputPoly -> coeffs[j]);
+	}
+
+	for(; j < inputPoly -> degree; j ++)
+	{
+		mpz_clear(inputPoly -> coeffs[j]);
+	}
+
+	free(inputPoly -> coeffs);
+	inputPoly -> degree = i - 1;
+	inputPoly -> coeffs = trimedCoeffs;
 }

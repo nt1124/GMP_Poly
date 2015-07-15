@@ -82,7 +82,8 @@ void test_nLogN_Multiply(mpz_t q)
 
 	mpz_t *coeffs;
 	gmp_randstate_t *state = seedRandGen();
-	int degreeA = rand() % 13, degreeB = rand() % 13;
+	// int degreeA = rand() % 13, degreeB = rand() % 13;
+	int degreeA = 5, degreeB = 4;
 	int numCoeffsA = degreeA + 1,  numCoeffsB = degreeB + 1;
 	int i;
 

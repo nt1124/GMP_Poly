@@ -93,9 +93,8 @@ struct Fq_poly *nLogN_MultiplyPolys(struct Fq_poly *rawPolyA, struct Fq_poly *ra
 
 	outputPointwisePoly = internalMultiplyTwoPointwiseReps(processedPolyA, processedPolyB, maxDegreeDoubled, q);
 
-	outputPoly = interpolatePointwiseRep(outputPointwisePoly, q);
+	outputPoly = interpolatePointwiseRepMultiply(outputPointwisePoly, rawPolyA -> degree, rawPolyB -> degree, q);
 
-	outputPoly -> degree = rawPolyA -> degree + rawPolyB -> degree;
-
+	// outputPoly -> degree = rawPolyA -> degree + rawPolyB -> degree;
 }
 
