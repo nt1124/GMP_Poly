@@ -192,6 +192,7 @@ struct Fq_poly *addPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 }
 
 
+// Performs naive multiplication of two Fq_polys.
 struct Fq_poly *mulPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 {
 	struct Fq_poly *toReturn;
@@ -228,36 +229,15 @@ struct Fq_poly *mulPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 }
 
 
+// Function to alter a single coeff of an Fq_poly struct.
 void setPolyCoeff(struct Fq_poly *poly, mpz_t newCoeff, int coeffIndexToSet, mpz_t q)
 {
 	mpz_mod(poly -> coeffs[coeffIndexToSet], newCoeff, q);
 }
 
 
-mpz_t *evalutePoly(struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
-{
-	mpz_t *result = (mpz_t*) calloc(1, sizeof(mpz_t));
-	mpz_t temp, tempResult;
-	int i;
-
-
-	mpz_init(temp);
-	mpz_init_set_ui(*result, 0);
-	mpz_init(tempResult);
-
-	for(i = polyToEval -> degree; i >= 0; i--)
-	{
-		mpz_mul(temp, *result, x);
-		mpz_add(tempResult, temp, polyToEval -> coeffs[i]);
-		mpz_mod(*result, tempResult, q);
-	}
-
-	return result;
-}
-
-
-
-void evalutePolyAlt(mpz_t *result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
+// Evaluate an Fq_poly at a given point. Store output in the result pointer.
+void evalutePoly(mpz_t *result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
 {
 	mpz_t temp, tempResult;
 	int i;
@@ -267,6 +247,7 @@ void evalutePolyAlt(mpz_t *result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
 	mpz_init_set_ui(*result, 0);
 	mpz_init(tempResult);
 
+	// Standard Naive Polynomial evaluation. Could be improved upon?
 	for(i = polyToEval -> degree; i >= 0; i--)
 	{
 		mpz_mul(temp, *result, x);
@@ -276,6 +257,7 @@ void evalutePolyAlt(mpz_t *result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
 }
 
 
+// Function to take an list of mpz_t's and output the product of them.
 void productOfMPZs(mpz_t output, mpz_t *inputArray, mpz_t q, int length)
 {
 	mpz_t unmoddedOutput;
@@ -294,21 +276,7 @@ void productOfMPZs(mpz_t output, mpz_t *inputArray, mpz_t q, int length)
 }
 
 
-int getHighestDegree(struct Fq_poly *inputPoly)
-{
-	int i = inputPoly -> degree;
-
-	while(0 != mpz_cmp_ui(inputPoly -> coeffs[i], 0))
-	{
-		i --;
-	}
-
-	i --;
-
-	return i;
-}
-
-
+// Function that takes a polynomial and trims the coeff array of leading zeroes.
 void trimLeadingZeroes(struct Fq_poly *inputPoly)
 {
 	mpz_t *trimedCoeffs;
@@ -317,25 +285,44 @@ void trimLeadingZeroes(struct Fq_poly *inputPoly)
 
 	i = inputPoly -> degree;
 
-	while(0 != mpz_cmp_ui(inputPoly -> coeffs[i], 0))
+	while(0 == mpz_cmp_ui(inputPoly -> coeffs[i], 0))
 	{
 		i --;
 	}
 
-	trimedCoeffs = (mpz_t *) calloc(i, sizeof(mpz_t));
+	// Degree of the poly is actually i, thus we have i + 1 coeffs.
+	trimedCoeffs = (mpz_t *) calloc(i + 1, sizeof(mpz_t));
 
-	for(j = 0; j < i; j ++)
+	// For each valid coeff, copy into the new mpz_t array. Clear the old one as we go.
+	for(j = 0; j <= i; j ++)
 	{
 		mpz_init_set(trimedCoeffs[j], inputPoly -> coeffs[j]);
 		mpz_clear(inputPoly -> coeffs[j]);
 	}
-
+	// Clear the rest of the old coeff array.
 	for(; j < inputPoly -> degree; j ++)
 	{
 		mpz_clear(inputPoly -> coeffs[j]);
 	}
 
+	// Housekeeping
 	free(inputPoly -> coeffs);
-	inputPoly -> degree = i - 1;
+
+	// Give the pointer to the new coeff array etc. 
+	inputPoly -> degree = i;
 	inputPoly -> coeffs = trimedCoeffs;
+}
+
+
+void freeFq_Poly(struct Fq_poly *polyToFree)
+{
+	int i;
+
+	for(i = 0; i < polyToFree -> degree; i ++)
+	{
+		mpz_clear(polyToFree -> coeffs[i]);
+	}
+
+	free(polyToFree -> coeffs);
+	free(polyToFree);
 }

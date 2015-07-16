@@ -132,9 +132,6 @@ struct Fq_poly *interpolatePointwiseRepMultiply(struct PointwiseRep *polyToInter
 	}
 
 	trimLeadingZeroes(outputPoly);
-	// printf("%d\n\n", outputPoly -> degree);
-	// outputPoly -> degree = degreeA + degreeB;
-
 
 
 	return outputPoly;

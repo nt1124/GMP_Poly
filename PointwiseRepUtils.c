@@ -1,3 +1,4 @@
+// This function will convert a standard Coeffient representation poly to a pointwise representation.
 struct PointwiseRep *convertPolyToPointRep(struct Fq_poly *inputPoly, mpz_t q, int numPointToEval)
 {
 	struct PointwiseRep *outputPoly = (struct PointwiseRep *) calloc(1, sizeof(struct PointwiseRep));
@@ -5,23 +6,32 @@ struct PointwiseRep *convertPolyToPointRep(struct Fq_poly *inputPoly, mpz_t q, i
 	int i;
 
 
+	// 
 	temp = (mpz_t *) calloc(1, sizeof(mpz_t));
 
+	// We need degree + 1 many points to represent the poly.
+	// So initialise a pointwise rep struct of the required size.
 	outputPoly -> numPoints = numPointToEval + 1;
 	outputPoly -> evalPoints = (mpz_t *) calloc(outputPoly -> numPoints, sizeof(mpz_t));
 
-	mpz_init_set_ui(xPoint, 1);
-	mpz_init_set(outputPoly -> evalPoints[0], inputPoly -> coeffs[0]);
 
+	// mpz_init_set_ui(xPoint, 1);
+	// Housekeeping
+	mpz_init(xPoint);
 
+	// Then for 1 up to numPoints (inclusive) eval the poly and store the result.
+	// This gives us numPoints many values 
 	for(i = 1; i <= outputPoly -> numPoints; i ++)
 	{
+		// Set X in an mpz_t variable
 		mpz_set_ui(xPoint, i);
 
-		mpz_init(outputPoly -> evalPoints[i-1]);
-		evalutePolyAlt(temp, inputPoly, xPoint, q);
+		// Evaluate the poly and store the result in a temp mpz_t
+		// mpz_init(outputPoly -> evalPoints[i-1]);
+		evalutePoly(temp, inputPoly, xPoint, q);
 
-		mpz_set(outputPoly -> evalPoints[i-1], *temp);
+		// 
+		mpz_init_set(outputPoly -> evalPoints[i-1], *temp);
 	}
 
 
@@ -95,6 +105,21 @@ struct Fq_poly *nLogN_MultiplyPolys(struct Fq_poly *rawPolyA, struct Fq_poly *ra
 
 	outputPoly = interpolatePointwiseRepMultiply(outputPointwisePoly, rawPolyA -> degree, rawPolyB -> degree, q);
 
-	// outputPoly -> degree = rawPolyA -> degree + rawPolyB -> degree;
+
+	return outputPoly;
 }
 
+
+
+void freePointwiseRep_Poly(struct PointwiseRep *polyToFree)
+{
+	int i;
+
+	for(i = 0; i < polyToFree -> numPoints; i ++)
+	{
+		mpz_clear(polyToFree -> evalPoints[i]);
+	}
+
+	free(polyToFree -> evalPoints);
+	free(polyToFree);
+}

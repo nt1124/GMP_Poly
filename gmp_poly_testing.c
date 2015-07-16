@@ -1,7 +1,7 @@
 // Testing Functions.
 
 
-
+/*
 void test_evaluation(mpz_t q)
 {
 	struct Fq_poly *polyToEval;
@@ -36,6 +36,7 @@ void test_evaluation(mpz_t q)
 		gmp_printf("++ %Zd\n\n", *yAlt);
 	}
 }
+*/
 
 
 
@@ -82,8 +83,7 @@ void test_nLogN_Multiply(mpz_t q)
 
 	mpz_t *coeffs;
 	gmp_randstate_t *state = seedRandGen();
-	// int degreeA = rand() % 13, degreeB = rand() % 13;
-	int degreeA = 5, degreeB = 4;
+	int degreeA = rand() % 13, degreeB = rand() % 13;
 	int numCoeffsA = degreeA + 1,  numCoeffsB = degreeB + 1;
 	int i;
 
@@ -113,11 +113,12 @@ void test_nLogN_Multiply(mpz_t q)
 	printPoly(originalPolyB);
 	printf("\n\n");
 
+	interpolatedPoly = mulPolys(originalPolyA, originalPolyB, q);
+	printPoly(interpolatedPoly);
+	printf("\n");
+
 	interpolatedPoly = nLogN_MultiplyPolys(originalPolyA, originalPolyB, q);
 	printPoly(interpolatedPoly);
 	printf("\n");
 
-	interpolatedPoly = mulPolys(originalPolyA, originalPolyB, q);
-	printPoly(interpolatedPoly);
-	printf("\n");
 }
