@@ -36,9 +36,39 @@ struct Fq_poly **getLagrangeFactorsDivProduct(mpz_t divFactorProduct, int n, uns
 
 	productOfMPZs(divFactorProduct, divFactors, q, n);
 
+	for(i = 0; i < n; i ++)
+	{
+		mpz_clear(divFactors[i]);
+	}
+
+	mpz_clear(inputArray[0]);
+	mpz_clear(inputArray[1]);
+	mpz_clear(temp);
+	mpz_clear(x_i);
+
+	free(inputArray);
+	free(divFactors);
+
 	return factors;
 }
 
+
+void tidyUpLagrangePolys(struct Fq_poly **factors, struct Fq_poly **intermediates, int n)
+{
+	int i;
+
+	for(i = 0; i < n; i ++)
+	{
+		freeFq_Poly(factors[i]);
+	}
+	free(factors);
+
+	for(i = 0; i < n - 1; i ++)
+	{
+		freeFq_Poly(intermediates[i]);
+	}
+	free(intermediates);
+}
 
 
 struct Fq_poly *generateLagrangePoly(int n, unsigned int i, mpz_t q)
@@ -71,6 +101,9 @@ struct Fq_poly *generateLagrangePoly(int n, unsigned int i, mpz_t q)
 
 	output = scalarMulti(intermediates[n - 2], divFactorInv, q);
 
+	tidyUpLagrangePolys(factors, intermediates, n);
+	mpz_clear(divFactor);
+	mpz_clear(divFactorInv);
 
 	return output;
 }
@@ -107,6 +140,8 @@ struct Fq_poly *interpolatePointwiseRep(struct PointwiseRep *polyToInterpolate, 
 	{
 		scalarMultiInPlace(lagrangePolys[i], polyToInterpolate -> evalPoints[i], q);
 		outputPoly = addPolys(lagrangePolys[i], outputPoly, q);
+
+		freeFq_Poly(lagrangePolys[i]);
 	}
 
 
@@ -116,7 +151,7 @@ struct Fq_poly *interpolatePointwiseRep(struct PointwiseRep *polyToInterpolate, 
 
 struct Fq_poly *interpolatePointwiseRepMultiply(struct PointwiseRep *polyToInterpolate, int degreeA, int degreeB, mpz_t q)
 {
-	struct Fq_poly *outputPoly = (struct Fq_poly *) calloc(1, sizeof(struct Fq_poly));
+	struct Fq_poly *outputPoly, *tempPoly;// = (struct Fq_poly *) calloc(1, sizeof(struct Fq_poly));
 	struct Fq_poly **lagrangePolys;
 	int i;
 
@@ -128,7 +163,11 @@ struct Fq_poly *interpolatePointwiseRepMultiply(struct PointwiseRep *polyToInter
 	for(i = 0; i < polyToInterpolate -> numPoints; i ++)
 	{
 		scalarMultiInPlace(lagrangePolys[i], polyToInterpolate -> evalPoints[i], q);
-		outputPoly = addPolys(lagrangePolys[i], outputPoly, q);
+		tempPoly = addPolys(lagrangePolys[i], outputPoly, q);
+
+		freeFq_Poly(lagrangePolys[i]);
+		freeFq_Poly(outputPoly);
+		outputPoly = tempPoly;
 	}
 
 	trimLeadingZeroes(outputPoly);

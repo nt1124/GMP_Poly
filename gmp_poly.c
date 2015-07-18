@@ -200,7 +200,6 @@ struct Fq_poly *mulPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 	int i, j, outputDegree = x -> degree + y -> degree;
 
 
-	mpz_init(temp);
 	tempArray = (mpz_t*) calloc(outputDegree + 1, sizeof(mpz_t));
 	for(i = 0; i <= outputDegree; i ++)
 	{
@@ -211,8 +210,7 @@ struct Fq_poly *mulPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 	{
 		for(j = 0; j <= y -> degree; j ++)
 		{
-			mpz_mul(temp, x -> coeffs[i], y -> coeffs[j]);
-			mpz_add(tempArray[i + j], tempArray[i + j], temp);
+			mpz_addmul(tempArray[i + j], x -> coeffs[i], y -> coeffs[j]);
 		}
 	}
 
@@ -224,6 +222,12 @@ struct Fq_poly *mulPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 
 
 	toReturn = setPolyWithArray(tempArray, q, outputDegree);
+
+	for(i = 0; i <= x -> degree + y -> degree; i ++)
+	{
+		mpz_clear(tempArray[i]);
+	}
+	free(tempArray);
 
 	return toReturn;
 }
