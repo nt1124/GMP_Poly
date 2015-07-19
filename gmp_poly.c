@@ -159,6 +159,7 @@ struct Fq_poly *scalarMulti(struct Fq_poly *poly, mpz_t scalar, mpz_t q)
 }
 
 
+// 
 void scalarMultiInPlace(struct Fq_poly *poly, mpz_t scalar, mpz_t q)
 {
 	mpz_t temp;
@@ -175,6 +176,7 @@ void scalarMultiInPlace(struct Fq_poly *poly, mpz_t scalar, mpz_t q)
 }
 
 
+// Function to wrap the functions for adding polynomials together.
 struct Fq_poly *addPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 {
 	struct Fq_poly *toReturn;
@@ -200,14 +202,17 @@ struct Fq_poly *mulPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 	int i, j, outputDegree = x -> degree + y -> degree;
 
 
+	// Create a temporary mpz_t array
 	tempArray = (mpz_t*) calloc(outputDegree + 1, sizeof(mpz_t));
 	for(i = 0; i <= outputDegree; i ++)
 	{
 		mpz_init_set_ui(tempArray[i], 0);
 	}
 
+	// For each Coeff in the x Poly, multiply by...
 	for(i = 0; i <= x -> degree; i ++)
 	{
+		// ...every coeff of the y Poly.
 		for(j = 0; j <= y -> degree; j ++)
 		{
 			mpz_addmul(tempArray[i + j], x -> coeffs[i], y -> coeffs[j]);
@@ -215,12 +220,13 @@ struct Fq_poly *mulPolys(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 	}
 
 
+	// Cut off anyleading zero coeffs.
 	while(0 == tempArray[outputDegree])
 	{
 		outputDegree --;
 	}
 
-
+	// Put the tempArray into a poly.
 	toReturn = setPolyWithArray(tempArray, q, outputDegree);
 
 	for(i = 0; i <= x -> degree + y -> degree; i ++)
@@ -268,6 +274,7 @@ void productOfMPZs(mpz_t output, mpz_t *inputArray, mpz_t q, int length)
 	int i;
 
 
+	// 
 	mpz_init(output);
 	mpz_init_set(unmoddedOutput, inputArray[0]);
 
@@ -318,10 +325,12 @@ void trimLeadingZeroes(struct Fq_poly *inputPoly)
 }
 
 
+// Function to clear/free the memory used for an Fq_poly structure.
 void freeFq_Poly(struct Fq_poly *polyToFree)
 {
 	int i;
 
+	// For each coeff, clear the mpz_t's
 	for(i = 0; i < polyToFree -> degree; i ++)
 	{
 		mpz_clear(polyToFree -> coeffs[i]);
