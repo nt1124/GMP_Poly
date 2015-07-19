@@ -90,14 +90,6 @@ void clearFqPoly(struct Fq_poly *toFree)
 }
 
 
-// Free the memory used for a polynomial.
-void freeFqPoly(struct Fq_poly *toFree)
-{
-	free(toFree -> coeffs);
-	free(toFree);
-}
-
-
 
 struct Fq_poly *setPolyWithArray(mpz_t *inputArray, mpz_t q, int degree)
 {
@@ -118,24 +110,27 @@ struct Fq_poly *addPolys_Internal(struct Fq_poly *x, struct Fq_poly *y, mpz_t q)
 {
 	struct Fq_poly *toReturn;
 	mpz_t temp;
-	int i, maxDegree, minDegree;
+	int i, xDegree, yDegree;
 
 
 	mpz_init(temp);
-	maxDegree = x -> degree;
-	minDegree = y -> degree;
-	toReturn = initPolyWithDegree(maxDegree);
+	xDegree = x -> degree;
+	yDegree = y -> degree;
+	toReturn = initPolyWithDegree(xDegree);
 
-	for(i = 0; i <= minDegree; i ++)
+	for(i = 0; i <= yDegree; i ++)
 	{
 		mpz_add(temp, x -> coeffs[i], y -> coeffs[i]);
 		mpz_mod(toReturn -> coeffs[i], temp, q);
 	}
 
-	for(; i <= maxDegree; i ++)
+	for(; i <= xDegree; i ++)
 	{
 		mpz_mod(toReturn -> coeffs[i], x -> coeffs[i], q);
 	}
+
+	mpz_clear(temp);
+
 
 	return toReturn;
 }
@@ -155,6 +150,8 @@ struct Fq_poly *scalarMulti(struct Fq_poly *poly, mpz_t scalar, mpz_t q)
 		mpz_mod(toReturn -> coeffs[i], temp, q);
 	}
 
+	mpz_clear(temp);
+
 	return toReturn;
 }
 
@@ -173,6 +170,7 @@ void scalarMultiInPlace(struct Fq_poly *poly, mpz_t scalar, mpz_t q)
 		mpz_mod(poly -> coeffs[i], temp, q);
 	}
 
+	mpz_clear(temp);
 }
 
 
@@ -247,6 +245,7 @@ void setPolyCoeff(struct Fq_poly *poly, mpz_t newCoeff, int coeffIndexToSet, mpz
 
 
 // Evaluate an Fq_poly at a given point. Store output in the result pointer.
+// The result pointer should be calloced and inited already.
 void evalutePoly(mpz_t *result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
 {
 	mpz_t temp, tempResult;
@@ -254,7 +253,7 @@ void evalutePoly(mpz_t *result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
 
 
 	mpz_init(temp);
-	mpz_init_set_ui(*result, 0);
+	mpz_set_ui(*result, 0);
 	mpz_init(tempResult);
 
 	// Standard Naive Polynomial evaluation. Could be improved upon?
@@ -264,6 +263,9 @@ void evalutePoly(mpz_t *result, struct Fq_poly *polyToEval, mpz_t x, mpz_t q)
 		mpz_add(tempResult, temp, polyToEval -> coeffs[i]);
 		mpz_mod(*result, tempResult, q);
 	}
+
+	mpz_clear(temp);
+	mpz_clear(tempResult);
 }
 
 
@@ -284,6 +286,8 @@ void productOfMPZs(mpz_t output, mpz_t *inputArray, mpz_t q, int length)
 	}
 
 	mpz_mod(output, unmoddedOutput, q);
+
+	mpz_clear(unmoddedOutput);
 }
 
 
@@ -331,7 +335,7 @@ void freeFq_Poly(struct Fq_poly *polyToFree)
 	int i;
 
 	// For each coeff, clear the mpz_t's
-	for(i = 0; i < polyToFree -> degree; i ++)
+	for(i = 0; i <= polyToFree -> degree; i ++)
 	{
 		mpz_clear(polyToFree -> coeffs[i]);
 	}

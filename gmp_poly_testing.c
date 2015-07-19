@@ -77,16 +77,14 @@ void test_interpolation(mpz_t q)
 void test_nLogN_Multiply(mpz_t q)
 {
 	struct Fq_poly *originalPolyA, *originalPolyB, *interpolatedPoly;
-	struct PointwiseRep *pointwiseVersion, *tempPointwise;
-
-	srand(time(NULL));
-
 	mpz_t *coeffs;
 	gmp_randstate_t *state = seedRandGen();
 	// int degreeA = rand() % 13, degreeB = rand() % 13;
 	int degreeA = 13, degreeB = 6;
 	int numCoeffsA = degreeA + 1,  numCoeffsB = degreeB + 1;
 	int i;
+
+	srand(time(NULL));
 
 
 	coeffs = (mpz_t *) calloc(numCoeffsA, sizeof(mpz_t));
@@ -98,6 +96,11 @@ void test_nLogN_Multiply(mpz_t q)
 		mpz_urandomm(coeffs[i], *state, q);
 	}
 	originalPolyA = setPolyWithArray(coeffs, q, degreeA);
+	for(i = 0; i < numCoeffsA; i ++)
+	{
+		mpz_clear(coeffs[i]);
+	}
+	free(coeffs);
 
 	coeffs = (mpz_t *) calloc(numCoeffsB, sizeof(mpz_t));
 	mpz_set_ui(q, 101);
@@ -108,6 +111,11 @@ void test_nLogN_Multiply(mpz_t q)
 		mpz_urandomm(coeffs[i], *state, q);
 	}
 	originalPolyB = setPolyWithArray(coeffs, q, degreeB);
+	for(i = 0; i < numCoeffsB; i ++)
+	{
+		mpz_clear(coeffs[i]);
+	}
+	free(coeffs);
 
 	printPoly(originalPolyA);
 	printf("\n");
@@ -117,9 +125,17 @@ void test_nLogN_Multiply(mpz_t q)
 	interpolatedPoly = mulPolys(originalPolyA, originalPolyB, q);
 	printPoly(interpolatedPoly);
 	printf("\n");
+	freeFq_Poly(interpolatedPoly);
 
 	interpolatedPoly = nLogN_MultiplyPolys(originalPolyA, originalPolyB, q);
 	printPoly(interpolatedPoly);
 	printf("\n");
 
+
+	freeFq_Poly(originalPolyA);
+	freeFq_Poly(originalPolyB);
+	freeFq_Poly(interpolatedPoly);
+
+	gmp_randclear(*state);
+	free(state);
 }

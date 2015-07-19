@@ -20,6 +20,7 @@ int main()
 	// test_interpolation(q);
 	test_nLogN_Multiply(q);
 
+	mpz_clear(q);
 
 	return 0;
 }

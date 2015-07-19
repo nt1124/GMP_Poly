@@ -8,7 +8,6 @@ struct Fq_poly **getLagrangeFactorsDivProduct(mpz_t divFactorProduct, int n, uns
 
 
 	mpz_init(temp);
-	mpz_init(divFactorProduct);
 	mpz_init(inputArray[0]);
 	mpz_init_set_ui(inputArray[1], 1);
 	mpz_init_set_ui(x_i, i);
@@ -27,8 +26,8 @@ struct Fq_poly **getLagrangeFactorsDivProduct(mpz_t divFactorProduct, int n, uns
 		}
 		else
 		{
-			mpz_init_set_ui(divFactors[j-1], 1);
-			mpz_init_set_ui(inputArray[0], 1);
+			mpz_set_ui(divFactors[j-1], 1);
+			mpz_set_ui(inputArray[0], 1);
 			factors[j-1] = setPolyWithArray(inputArray, q, 0);
 		}
 	}
@@ -170,8 +169,9 @@ struct Fq_poly *interpolatePointwiseRepMultiply(struct PointwiseRep *polyToInter
 		outputPoly = tempPoly;
 	}
 
-	trimLeadingZeroes(outputPoly);
 
+	trimLeadingZeroes(outputPoly);
+	free(lagrangePolys);
 
 	return outputPoly;
 }

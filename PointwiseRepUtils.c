@@ -6,17 +6,14 @@ struct PointwiseRep *convertPolyToPointRep(struct Fq_poly *inputPoly, mpz_t q, i
 	int i;
 
 
-	// 
-	temp = (mpz_t *) calloc(1, sizeof(mpz_t));
-
 	// We need degree + 1 many points to represent the poly.
 	// So initialise a pointwise rep struct of the required size.
 	outputPoly -> numPoints = numPointToEval + 1;
 	outputPoly -> evalPoints = (mpz_t *) calloc(outputPoly -> numPoints, sizeof(mpz_t));
 
-
-	// mpz_init_set_ui(xPoint, 1);
 	// Housekeeping
+	temp = (mpz_t *) calloc(1, sizeof(mpz_t));
+	mpz_init(*temp);
 	mpz_init(xPoint);
 
 	// Then for 1 up to numPoints (inclusive) eval the poly and store the result.
@@ -35,7 +32,27 @@ struct PointwiseRep *convertPolyToPointRep(struct Fq_poly *inputPoly, mpz_t q, i
 	}
 
 
+	mpz_clear(xPoint);
+	mpz_clear(yPoint);
+	mpz_clear(*temp);
+	free(temp);
+
 	return outputPoly;
+}
+
+
+
+void freePointwiseRep_Poly(struct PointwiseRep *polyToFree)
+{
+	int i;
+
+	for(i = 0; i < polyToFree -> numPoints; i ++)
+	{
+		mpz_clear(polyToFree -> evalPoints[i]);
+	}
+
+	free(polyToFree -> evalPoints);
+	free(polyToFree);
 }
 
 
@@ -105,21 +122,9 @@ struct Fq_poly *nLogN_MultiplyPolys(struct Fq_poly *rawPolyA, struct Fq_poly *ra
 
 	outputPoly = interpolatePointwiseRepMultiply(outputPointwisePoly, rawPolyA -> degree, rawPolyB -> degree, q);
 
+	freePointwiseRep_Poly(processedPolyA);
+	freePointwiseRep_Poly(processedPolyB);
+	freePointwiseRep_Poly(outputPointwisePoly);
 
 	return outputPoly;
-}
-
-
-
-void freePointwiseRep_Poly(struct PointwiseRep *polyToFree)
-{
-	int i;
-
-	for(i = 0; i < polyToFree -> numPoints; i ++)
-	{
-		mpz_clear(polyToFree -> evalPoints[i]);
-	}
-
-	free(polyToFree -> evalPoints);
-	free(polyToFree);
 }
