@@ -27,7 +27,7 @@ struct PointwiseRep *convertPolyToPointRep(struct Fq_poly *inputPoly, mpz_t q, i
 		// mpz_init(outputPoly -> evalPoints[i-1]);
 		evalutePoly(temp, inputPoly, xPoint, q);
 
-		// 
+		// Put the output in the 
 		mpz_init_set(outputPoly -> evalPoints[i-1], *temp);
 	}
 
