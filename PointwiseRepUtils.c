@@ -2,7 +2,7 @@
 struct PointwiseRep *convertPolyToPointRep(struct Fq_poly *inputPoly, mpz_t q, int numPointToEval)
 {
 	struct PointwiseRep *outputPoly = (struct PointwiseRep *) calloc(1, sizeof(struct PointwiseRep));
-	mpz_t xPoint, yPoint, *temp;
+	mpz_t xPoint, *temp;
 	int i;
 
 
@@ -27,13 +27,12 @@ struct PointwiseRep *convertPolyToPointRep(struct Fq_poly *inputPoly, mpz_t q, i
 		// mpz_init(outputPoly -> evalPoints[i-1]);
 		evalutePoly(temp, inputPoly, xPoint, q);
 
-		// Put the output in the 
+		// Place the output in the output thingy.
 		mpz_init_set(outputPoly -> evalPoints[i-1], *temp);
 	}
 
 
 	mpz_clear(xPoint);
-	mpz_clear(yPoint);
 	mpz_clear(*temp);
 	free(temp);
 
@@ -121,6 +120,7 @@ struct Fq_poly *nLogN_MultiplyPolys(struct Fq_poly *rawPolyA, struct Fq_poly *ra
 	outputPointwisePoly = internalMultiplyTwoPointwiseReps(processedPolyA, processedPolyB, maxDegreeDoubled, q);
 
 	outputPoly = interpolatePointwiseRepMultiply(outputPointwisePoly, rawPolyA -> degree, rawPolyB -> degree, q);
+
 
 	freePointwiseRep_Poly(processedPolyA);
 	freePointwiseRep_Poly(processedPolyB);

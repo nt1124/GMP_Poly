@@ -31,7 +31,7 @@ typedef struct PointwiseRep
 #include "PointwiseRepUtils.c"
 
 
-#include "gmp_poly_testing.c"
+#include "Testing/gmp_poly_testing.c"
 
 
 #endif

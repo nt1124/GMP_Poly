@@ -127,6 +127,9 @@ void test_nLogN_Multiply(mpz_t q)
 	printf("\n");
 	freeFq_Poly(interpolatedPoly);
 
+	printf(">>>\n");
+	fflush(stdout);
+
 	interpolatedPoly = nLogN_MultiplyPolys(originalPolyA, originalPolyB, q);
 	printPoly(interpolatedPoly);
 	printf("\n");
