@@ -22,6 +22,10 @@ typedef struct PointwiseRep
 	mpz_t *evalPoints;
 } PointwiseRep;
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #include "gmp_poly.c"
 #include "gmp_utils.c"
@@ -32,6 +36,7 @@ typedef struct PointwiseRep
 
 
 #include "Testing/gmp_poly_testing.c"
+#include "Testing/timingUtils.c"
 
 
 #endif

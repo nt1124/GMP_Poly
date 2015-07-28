@@ -343,3 +343,14 @@ void freeFq_Poly(struct Fq_poly *polyToFree)
 	free(polyToFree -> coeffs);
 	free(polyToFree);
 }
+
+
+gmp_randstate_t *seedRandGen()
+{
+	gmp_randstate_t *state = (gmp_randstate_t*) calloc(1, sizeof(gmp_randstate_t));
+	unsigned long int seed = (unsigned long int) time(NULL);
+	gmp_randinit_default(*state);
+	gmp_randseed_ui(*state, seed);
+
+	return state;
+}

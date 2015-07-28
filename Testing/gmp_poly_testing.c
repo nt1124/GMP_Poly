@@ -79,8 +79,7 @@ void test_nLogN_Multiply(mpz_t q)
 	struct Fq_poly *originalPolyA, *originalPolyB, *interpolatedPoly;
 	mpz_t *coeffs;
 	gmp_randstate_t *state = seedRandGen();
-	// int degreeA = rand() % 13, degreeB = rand() % 13;
-	int degreeA = 13, degreeB = 6;
+	int degreeA = rand() % 122, degreeB = rand() % 175;
 	int numCoeffsA = degreeA + 1,  numCoeffsB = degreeB + 1;
 	int i;
 
@@ -88,7 +87,7 @@ void test_nLogN_Multiply(mpz_t q)
 
 
 	coeffs = (mpz_t *) calloc(numCoeffsA, sizeof(mpz_t));
-	mpz_set_ui(q, 101);
+
 
 	for(i = 0; i < numCoeffsA; i ++)
 	{
@@ -103,7 +102,7 @@ void test_nLogN_Multiply(mpz_t q)
 	free(coeffs);
 
 	coeffs = (mpz_t *) calloc(numCoeffsB, sizeof(mpz_t));
-	mpz_set_ui(q, 101);
+	// mpz_set_ui(q, 101);
 
 	for(i = 0; i < numCoeffsB; i ++)
 	{
